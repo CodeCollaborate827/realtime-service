@@ -5,15 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserOnlineStatus {
+public class OldSession {
+    private String sessionId;
     private String userId;
-    private List<UserSession> currentSessions;
-    private boolean isOnline;
-    private List<UserSession> previousSessions; // TODO: keep only last 5 sessions
+    private Long startTime;
+    private Long endTime;
 }

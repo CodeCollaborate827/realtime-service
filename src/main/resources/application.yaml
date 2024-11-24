@@ -5,6 +5,9 @@ spring:
     streams:
       bootstrap-servers: localhost:9092
       application-id: realtime-service
+      default:
+        key-serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+        value-serde: org.apache.kafka.common.serialization.Serdes$StringSerde
 
 
 eureka:
@@ -18,6 +21,9 @@ eureka:
 server:
   port: 8087
 
+logging:
+  level:
+    com.chat.realtime_service: debug
 
 realtime:
   kafka:

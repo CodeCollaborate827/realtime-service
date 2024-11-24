@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.Base64;
 
 @Slf4j
-public class Utils {
+public class Base64Utils {
 
     private final static ObjectMapper objectMapper = new ObjectMapper();
 

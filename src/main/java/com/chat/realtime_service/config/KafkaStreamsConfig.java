@@ -3,7 +3,7 @@ package com.chat.realtime_service.config;
 import com.chat.realtime_service.aggregator.UserSessionStatusAggregator;
 import com.chat.realtime_service.models.UserSessionActivity;
 import com.chat.realtime_service.serdes.CustomSerde;
-import com.chat.realtime_service.utils.Utils;
+import com.chat.realtime_service.utils.Base64Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serdes;
@@ -20,6 +20,7 @@ import org.apache.kafka.streams.state.Stores;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.annotation.EnableKafkaStreams;
 
 import java.util.Properties;
@@ -64,23 +65,28 @@ public class KafkaStreamsConfig {
 
     }
 
+//    @Bean
+//    public StreamsBuilder streamsBuilder(StreamsBuilder streamsBuilder) {
+////        KTable<String, UserSessionActivity> stringUserSessionActivityKTable = kStreamUserSessionStatus(streamsBuilder);
+//        return streamsBuilder;
+//    }
+
     @Bean
-    public StreamsBuilder streamsBuilder(StreamsBuilder streamsBuilder) {
-        KTable<String, UserSessionActivity> stringUserSessionActivityKTable = kStreamUserSessionStatus(streamsBuilder);
-        return streamsBuilder;
+    public UserSessionStatusAggregator userSessionStatusAggregator(RedisTemplate<String, UserSessionActivity> redisTemplate) {
+        return new UserSessionStatusAggregator(redisTemplate);
     }
 
-    public KTable<String, UserSessionActivity> kStreamUserSessionStatus(StreamsBuilder streamsBuilder) {
-
+    @Bean
+    public KTable<String, UserSessionActivity> kStreamUserSessionStatus(StreamsBuilder streamsBuilder, RedisTemplate<String, UserSessionActivity> redisTemplate) {
         return streamsBuilder.stream(userSessionTopic, Consumed.with(Serdes.String(), CustomSerde.eventSerde()))
                 .peek((key, value) -> log.info("Key: {}, Value: {}", key, value))
-                .mapValues(Utils::getUserSession)
+                .mapValues(Base64Utils::getUserSession)
                 .filter((key, value) -> value != null)
                 .selectKey((key, value) -> value.getUserId())
                 .groupByKey(Grouped.with(Serdes.String(), CustomSerde.sessionSerde()))
                 .aggregate(
                         UserSessionActivity::new,
-                        new UserSessionStatusAggregator(),
+                        userSessionStatusAggregator(redisTemplate),
                         Materialized.<String, UserSessionActivity, KeyValueStore<Bytes, byte[]>>as(USER_SESSION_ACTIVITY_STORE)
                                 .withKeySerde(Serdes.String())
                                 .withValueSerde(CustomSerde.userSessionActivitySerde())

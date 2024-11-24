@@ -4,8 +4,10 @@ import com.chat.realtime_service.events.upstream.Session;
 import com.chat.realtime_service.models.ActiveSession;
 import com.chat.realtime_service.models.OldSession;
 import com.chat.realtime_service.models.UserSessionActivity;
+import com.chat.realtime_service.utils.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.kstream.Aggregator;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +19,11 @@ import static com.chat.realtime_service.constants.ApplicationConstants.SESSION_S
 @Slf4j
 public class UserSessionStatusAggregator implements Aggregator<String, Session, UserSessionActivity> {
     private static final int MAX_OLD_SESSIONS_LIMIT = 5;
+    private RedisTemplate<String, UserSessionActivity> redisTemplate;
 
+    public UserSessionStatusAggregator(RedisTemplate<String, UserSessionActivity> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
     @Override
     public UserSessionActivity apply(String userId, Session sessionStatusEvent, UserSessionActivity userSessionActivity) {
         log.info("Processing for user: {} session event: {}", userId, sessionStatusEvent);
@@ -73,8 +79,8 @@ public class UserSessionStatusAggregator implements Aggregator<String, Session, 
 
         userSessionActivity.getActiveSessions().add(userCurrentSession);
 
-        // TODO: update user session activity to Redis
-
+        // store the updated user session activity for querying
+        storeUserSessionActivity(userSessionActivity);
     }
 
     private void removeCurrentSessionAndAddPreviousSession(UserSessionActivity userSessionActivity, Session sessionStatusEvent) {
@@ -104,7 +110,8 @@ public class UserSessionStatusAggregator implements Aggregator<String, Session, 
         userSessionActivity.getPreviousSessions().addFirst(oldSession); // sort by latest
         cleanUpOldSession(userSessionActivity);
 
-        // TODO: update user session activity to Redis
+        // store the updated user session activity for querying
+        storeUserSessionActivity(userSessionActivity);
     }
 
     private static void cleanUpOldSession(UserSessionActivity userSessionActivity) {
@@ -112,6 +119,13 @@ public class UserSessionStatusAggregator implements Aggregator<String, Session, 
         while (previousSessions.size() > MAX_OLD_SESSIONS_LIMIT) {
             userSessionActivity.getPreviousSessions().removeLast();
         }
+    }
+
+    private void storeUserSessionActivity(UserSessionActivity userSessionActivity) {
+        String redisKey = RedisUtils.formatUserSessionActivityKey(userSessionActivity.getUserId());
+        redisTemplate
+                .opsForValue()
+                .set(redisKey, userSessionActivity);
     }
 
 

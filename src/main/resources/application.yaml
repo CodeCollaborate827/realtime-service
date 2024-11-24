@@ -8,6 +8,10 @@ spring:
       default:
         key-serde: org.apache.kafka.common.serialization.Serdes$StringSerde
         value-serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+  data:
+    redis:
+      host: localhost
+      port: 6379
 
 
 eureka:

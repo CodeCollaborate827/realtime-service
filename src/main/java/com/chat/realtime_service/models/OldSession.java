@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class OldSession {
     private String sessionId;
     private String userId;
+    private String clientIp;
     private Long startTime;
     private Long endTime;
 }

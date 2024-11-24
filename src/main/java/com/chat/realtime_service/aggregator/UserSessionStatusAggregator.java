@@ -68,6 +68,7 @@ public class UserSessionStatusAggregator implements Aggregator<String, Session, 
                 .sessionId(sessionStatusEvent.getSessionId())
                 .userId(sessionStatusEvent.getUserId())
                 .startTime(sessionStatusEvent.getTimestamp())
+                .clientIp(sessionStatusEvent.getClientIp())
                 .build();
 
         userSessionActivity.getActiveSessions().add(userCurrentSession);
@@ -96,6 +97,7 @@ public class UserSessionStatusAggregator implements Aggregator<String, Session, 
                 .sessionId(sessionStatusEvent.getSessionId())
                 .userId(sessionStatusEvent.getUserId())
                 .startTime(session.get().getStartTime())
+                .clientIp(sessionStatusEvent.getClientIp())
                 .endTime(sessionStatusEvent.getTimestamp())
                 .build();
 

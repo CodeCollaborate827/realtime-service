@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ActiveSession {
     private String sessionId;
+    private String clientIp;
     private String userId;
     private Long startTime;
 }

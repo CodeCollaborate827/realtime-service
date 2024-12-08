@@ -14,6 +14,5 @@ import java.util.List;
 public class UserSessionActivity {
     private String userId;
     private List<ActiveSession> activeSessions;
-    private boolean isOnline;
     private List<OldSession> previousSessions;// TODO: keep only last 5 sessions
 }

@@ -7,7 +7,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 @SpringBootApplication
 @EnableDiscoveryClient
 public class RealtimeServiceApplication {
-
+	//TODO: try to rename the class names related to websocket session and new message event
 	public static void main(String[] args) {
 		SpringApplication.run(RealtimeServiceApplication.class, args);
 	}

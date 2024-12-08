@@ -1,7 +1,8 @@
 package com.chat.realtime_service.utils;
 
 import com.chat.realtime_service.events.Event;
-import com.chat.realtime_service.events.upstream.Session;
+import com.chat.realtime_service.events.upstream.NewMessageEvent;
+import com.chat.realtime_service.events.upstream.UserSessionEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,9 +14,19 @@ public class Base64Utils {
 
     private final static ObjectMapper objectMapper = new ObjectMapper();
 
-    public static Session getUserSession(Event event){
+    public static UserSessionEvent getUserSession(Event event){
         try {
-            return parsePayloadBase64(event, Session.class);
+            return parsePayloadBase64(event, UserSessionEvent.class);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            return null;
+        }
+
+    }
+
+    public static NewMessageEvent getMessagePayload(Event event){
+        try {
+            return parsePayloadBase64(event, NewMessageEvent.class);
         } catch (IOException e) {
             log.error(e.getMessage());
             return null;

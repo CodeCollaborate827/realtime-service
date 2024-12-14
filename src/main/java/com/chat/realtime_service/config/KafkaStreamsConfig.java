@@ -4,6 +4,7 @@ import com.chat.realtime_service.models.UserSessionActivity;
 import com.chat.realtime_service.processor.supplier.ChatMessageProcessorSupplier;
 import com.chat.realtime_service.processor.supplier.UserSessionProcessorSupplier;
 import com.chat.realtime_service.serdes.CustomSerde;
+import com.chat.realtime_service.service.AmqpMessageSender;
 import com.chat.realtime_service.utils.Base64Utils;
 import com.chat.realtime_service.utils.MessageUtils;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,6 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.Named;
-import org.apache.kafka.streams.kstream.Produced;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.StoreBuilder;
 import org.apache.kafka.streams.state.Stores;
@@ -51,6 +51,7 @@ public class KafkaStreamsConfig {
 
     private final UserSessionProcessorSupplier userSessionProcessorSupplier;
     private final ChatMessageProcessorSupplier chatMessageProcessorSupplier;
+    private final AmqpMessageSender amqpMessageSender;
 
     public static final String USER_SESSION_ACTIVITY_STORE_NAME = "USER_SESSION_ACTIVITY_STORE";
 
@@ -107,9 +108,7 @@ public class KafkaStreamsConfig {
                 .peek((key, value) -> log.info("New Message Kafka, Key: {}, Value: {}", key, value))
                 .flatMapValues(newMessageEVent -> MessageUtils.createMessageForEachMember(newMessageEVent))
                 .process(chatMessageProcessorSupplier, Named.as(CHAT_MESSAGE_PROCESSOR), USER_SESSION_ACTIVITY_STORE_NAME)
-                .flatMapValues(websocketMessages -> websocketMessages)
-                .selectKey((ignoredKey, websocketMessage) -> websocketMessage.getSessionId()) // the key is the session id
-                .to(websocketMessageTopic, Produced.with(Serdes.String(), CustomSerde.serdeWebsocketMessage()));
-                // TODO: send to RabbitMQ not Kafka
+                .peek(amqpMessageSender::sendMessageToUser);
+                    // TODO: output some log message here or emit an event to a new topic for monitoring
     }
 }

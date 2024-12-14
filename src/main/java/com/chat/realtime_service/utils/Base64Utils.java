@@ -3,7 +3,6 @@ package com.chat.realtime_service.utils;
 import com.chat.realtime_service.events.Event;
 import com.chat.realtime_service.events.upstream.NewMessageEvent;
 import com.chat.realtime_service.events.upstream.UserSessionEvent;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -12,7 +11,6 @@ import java.util.Base64;
 @Slf4j
 public class Base64Utils {
 
-    private final static ObjectMapper objectMapper = new ObjectMapper();
 
     public static UserSessionEvent getUserSession(Event event){
         try {
@@ -37,7 +35,7 @@ public class Base64Utils {
     public static <T> T parsePayloadBase64(Event event, Class<T> t) throws IOException {
         String originalString = event.getPayloadBase64();
         byte[] decodedBytes = Base64.getDecoder().decode(originalString);
-        return objectMapper.readValue(decodedBytes, t);
+        return JsonUtils.toObject(decodedBytes, t);
     }
 
 }

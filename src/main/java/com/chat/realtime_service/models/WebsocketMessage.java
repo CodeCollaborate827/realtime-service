@@ -23,7 +23,8 @@ public class WebsocketMessage {
         NEW_NOTIFICATION,
     }
 
-    private String sessionId;
+    private String userId;
+    private String wsMessageId;
     private WebsocketMessageType type;
     private Object data;
 }

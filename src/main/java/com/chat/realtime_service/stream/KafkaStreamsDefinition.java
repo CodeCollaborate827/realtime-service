@@ -51,7 +51,7 @@ public class KafkaStreamsDefinition {
 
 
     private final String USER_SESSION_ACTIVITY_PROCESSOR = "userSessionProcessor";
-    private final String WEBSOCKET_MESSAGE_PROCESSOR = "chatMessageProcessor";
+    private final String WEBSOCKET_MESSAGE_PROCESSOR = "WEBSOCKET_MESSAGE_PROCESSOR";
 
     private final WebsocketSessionProcessorSupplier websocketSessionProcessorSupplier;
     private final WebsocketMessageProcessorSupplier websocketMessageProcessorSupplier;
@@ -116,7 +116,7 @@ public class KafkaStreamsDefinition {
                 .peek((key, value) -> log.info("New Message Kafka, Key: {}, Value: {}", key, value))
                 .flatMapValues(MessageUtils::createWebsocketMessageForEachMember)
                 .selectKey((ignoreKey, value) -> value.getUserId())
-                .process(websocketMessageProcessorSupplier, Named.as(WEBSOCKET_MESSAGE_PROCESSOR), USER_SESSION_ACTIVITY_STORE_NAME)
+                .process(websocketMessageProcessorSupplier, USER_SESSION_ACTIVITY_STORE_NAME)
                 .peek(amqpMessageSender::sendMessageToUser);
     }
 
@@ -126,7 +126,7 @@ public class KafkaStreamsDefinition {
                 .mapValues(Base64Utils::getConversationEventPayload)
                 .flatMapValues(MessageUtils::createWebsocketMessageForEachMember)
                 .selectKey((ignoreKey, value) -> value.getUserId())
-                .process(websocketMessageProcessorSupplier, Named.as(WEBSOCKET_MESSAGE_PROCESSOR), USER_SESSION_ACTIVITY_STORE_NAME)
+                .process(websocketMessageProcessorSupplier, USER_SESSION_ACTIVITY_STORE_NAME)
                 .peek(amqpMessageSender::sendMessageToUser);
     }
 
@@ -136,7 +136,7 @@ public class KafkaStreamsDefinition {
                 .mapValues(Base64Utils::getNotificationEventPayload)
                 .mapValues(MessageUtils::convertToWebsocketMessage)
                 .selectKey((ignoreKey, value) -> value.getUserId())
-                .process(websocketMessageProcessorSupplier, Named.as(WEBSOCKET_MESSAGE_PROCESSOR), USER_SESSION_ACTIVITY_STORE_NAME)
+                .process(websocketMessageProcessorSupplier, USER_SESSION_ACTIVITY_STORE_NAME)
                 .peek(amqpMessageSender::sendMessageToUser);
     }
 

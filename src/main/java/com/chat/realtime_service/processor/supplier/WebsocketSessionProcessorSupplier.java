@@ -3,6 +3,7 @@ package com.chat.realtime_service.processor.supplier;
 import com.chat.realtime_service.events.upstream.WebsocketSessionEvent;
 import com.chat.realtime_service.models.UserSessionHistory;
 import com.chat.realtime_service.processor.WebsocketSessionProcessor;
+import com.chat.realtime_service.stream.KafkaStreamsDefinition;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorSupplier;
@@ -20,7 +21,7 @@ public class WebsocketSessionProcessorSupplier implements ProcessorSupplier<Stri
 
     @Override
     public Processor<String, WebsocketSessionEvent, String, UserSessionHistory> get() {
-        String storeName = KafkaStreamsConfig.USER_SESSION_ACTIVITY_STORE_NAME;
+        String storeName = KafkaStreamsDefinition.USER_SESSION_ACTIVITY_STORE_NAME;
         return new WebsocketSessionProcessor(storeName, redisTemplate);
     }
 

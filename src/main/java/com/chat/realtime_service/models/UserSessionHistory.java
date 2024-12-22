@@ -20,7 +20,7 @@ public class UserSessionHistory {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public class ActiveSession {
+    public static class ActiveSession {
         private String sessionId;
         private String clientIp;
         private String userId;
@@ -31,7 +31,7 @@ public class UserSessionHistory {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public class OldSession {
+    public static class OldSession {
         private String sessionId;
         private String userId;
         private String clientIp;

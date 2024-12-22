@@ -21,6 +21,6 @@ public class WebsocketMessage {
     private String userId;
     private String wsMessageId;
     private EventType eventType;
-    private Object data;
+    private Object payload;
     private Long timestamp;
 }

@@ -37,4 +37,7 @@ realtime:
       messageEvents: topic.message.events
       notificationEvents: topic.notification.events
       conversationEvents: topic.conversation.events
+      websocket:
+        user:
+          session: topic.websocket.user.session
 

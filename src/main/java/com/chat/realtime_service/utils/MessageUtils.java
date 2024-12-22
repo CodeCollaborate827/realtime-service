@@ -17,11 +17,11 @@ public class MessageUtils {
         // create each websocket message object for each member in the conversation for the message event
         for (String memberId : messageEvent.getConversationMemberIds()) {
             WebsocketMessage websocketMessage = WebsocketMessage.builder()
-                    .data(messageEvent)
                     .wsMessageId(UUID.randomUUID().toString())
                     .userId(memberId)
                     .eventType(WebsocketMessage.EventType.MESSAGE_EVENT)
                     .timestamp(Instant.now().getEpochSecond())
+                    .payload(messageEvent)
                     .build();
             newMessageList.add(websocketMessage);
         }
@@ -37,9 +37,9 @@ public class MessageUtils {
             WebsocketMessage websocketMessage = WebsocketMessage.builder()
                     .wsMessageId(UUID.randomUUID().toString()) // using the same id as in the new message event
                     .userId(memberId)
-                    .data(conversationEvent)
                     .eventType(WebsocketMessage.EventType.CONVERSATION_EVENT)
                     .timestamp(Instant.now().getEpochSecond())
+                    .payload(conversationEvent)
                     .build();
             newMessageList.add(websocketMessage);
         }
@@ -54,7 +54,7 @@ public class MessageUtils {
                 .eventType(WebsocketMessage.EventType.NOTIFICATION_EVENT)
                 .userId(notificationEvent.getRecipientId())
                 .timestamp(Instant.now().getEpochSecond())
-                .data(notificationEvent)
+                .payload(notificationEvent)
                 .build();
 
         return websocketMessage;

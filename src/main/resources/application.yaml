@@ -5,6 +5,15 @@ spring:
     streams:
       bootstrap-servers: localhost:9092
       application-id: realtime-service
+      default:
+        key-serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+        value-serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  profiles:
+    include: rabbitmq
 
 
 eureka:
@@ -18,9 +27,21 @@ eureka:
 server:
   port: 8087
 
+logging:
+  level:
+    com.chat.realtime_service: debug
 
 realtime:
   kafka:
     topic:
-      user:
-        session: topic.user.session
+      message:
+        new: topic.message.new
+        read: topic.message.read
+        delivered: topic.message.delivered
+        typing: topic.message.typing
+        delete: topic.message.deleted
+      websocket:
+        message: topic.websocket.message
+        user:
+          session: topic.websocket.user.session
+

@@ -11,9 +11,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserOnlineStatus {
+public class UserSessionActivity {
     private String userId;
-    private List<UserSession> currentSessions;
-    private boolean isOnline;
-    private List<UserSession> previousSessions; // TODO: keep only last 5 sessions
+    private List<ActiveSession> activeSessions;
+    private List<OldSession> previousSessions;// TODO: keep only last 5 sessions
 }

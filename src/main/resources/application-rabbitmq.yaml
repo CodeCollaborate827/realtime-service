@@ -8,6 +8,6 @@ spring:
 rabbitmq:
   message:
     exchange:
-      name: user.message.exchange
+      name: user.websoket.message.exchange
       type: topic
       durable: false # if true, the exchange will survive broker restarts. in development, we don't need this

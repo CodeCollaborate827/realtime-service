@@ -11,12 +11,19 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class NewMessageEvent {
+public class MessageEvent {
+  public enum MessageEventType {
+    MESSAGE_NEW,
+    MESSAGE_DELIVERED,
+    MESSAGE_SENT,
+    MESSAGE_REACTED,
+    MESSAGE_EDITED,
+    MESSAGE_DELETED
+  }
+
+  private MessageEventType messageType;
   private String messageId;
-  private String senderId;
-  private String repliedMessageId;
   private String conversationId;
-  private String messageContent;
-  private Long messageCreatedAt;
+  private Object data; // depends on the messageType the data would be different
   private List<String> conversationMemberIds;
 }

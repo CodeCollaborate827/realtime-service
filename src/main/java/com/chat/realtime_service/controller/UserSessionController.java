@@ -1,6 +1,6 @@
 package com.chat.realtime_service.controller;
 
-import com.chat.realtime_service.models.UserSessionActivity;
+import com.chat.realtime_service.models.UserSessionHistory;
 import com.chat.realtime_service.utils.RedisUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ import java.util.Objects;
 @Slf4j
 @RequiredArgsConstructor
 public class UserSessionController {
-    private final RedisTemplate<String, UserSessionActivity> redisTemplate;
+    private final RedisTemplate<String, UserSessionHistory> redisTemplate;
 
     @GetMapping("/{userId}")
     public Mono<ResponseEntity<Object>> queryUserSessionActivity(@PathVariable String userId) {

@@ -1,9 +1,8 @@
 package com.chat.realtime_service.processor.supplier;
 
-import com.chat.realtime_service.config.KafkaStreamsConfig;
-import com.chat.realtime_service.events.upstream.UserSessionEvent;
-import com.chat.realtime_service.models.UserSessionActivity;
-import com.chat.realtime_service.processor.UserSessionProcessor;
+import com.chat.realtime_service.events.upstream.WebsocketSessionEvent;
+import com.chat.realtime_service.models.UserSessionHistory;
+import com.chat.realtime_service.processor.WebsocketSessionProcessor;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorSupplier;
@@ -15,14 +14,14 @@ import java.util.Set;
 
 @RequiredArgsConstructor
 @Component
-public class UserSessionProcessorSupplier implements ProcessorSupplier<String, UserSessionEvent, String, UserSessionActivity> {
+public class WebsocketSessionProcessorSupplier implements ProcessorSupplier<String, WebsocketSessionEvent, String, UserSessionHistory> {
 
-    private final RedisTemplate<String, UserSessionActivity> redisTemplate;
+    private final RedisTemplate<String, UserSessionHistory> redisTemplate;
 
     @Override
-    public Processor<String, UserSessionEvent, String, UserSessionActivity> get() {
+    public Processor<String, WebsocketSessionEvent, String, UserSessionHistory> get() {
         String storeName = KafkaStreamsConfig.USER_SESSION_ACTIVITY_STORE_NAME;
-        return new UserSessionProcessor(storeName, redisTemplate);
+        return new WebsocketSessionProcessor(storeName, redisTemplate);
     }
 
     @Override

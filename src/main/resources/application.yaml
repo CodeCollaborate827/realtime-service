@@ -34,14 +34,10 @@ logging:
 realtime:
   kafka:
     topic:
-      message:
-        new: topic.message.new
-        read: topic.message.read
-        delivered: topic.message.delivered
-        typing: topic.message.typing
-        delete: topic.message.deleted
+      messageEvents: topic.message.events
+      notificationEvents: topic.notification.events
+      conversationEvents: topic.conversation.events
       websocket:
-        message: topic.websocket.message
         user:
           session: topic.websocket.user.session
 

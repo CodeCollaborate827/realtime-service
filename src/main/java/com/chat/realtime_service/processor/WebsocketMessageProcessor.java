@@ -1,6 +1,6 @@
 package com.chat.realtime_service.processor;
 
-import com.chat.realtime_service.models.UserSessionActivity;
+import com.chat.realtime_service.models.UserSessionHistory;
 import com.chat.realtime_service.models.WebsocketMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.processor.api.Processor;
@@ -9,13 +9,13 @@ import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
 
 @Slf4j
-public class ChatMessageProcessor implements Processor<String, WebsocketMessage, String, WebsocketMessage> {
+public class WebsocketMessageProcessor implements Processor<String, WebsocketMessage, String, WebsocketMessage> {
 
     private String storeName;
     private ProcessorContext<String, WebsocketMessage> context;
-    private KeyValueStore<String, UserSessionActivity> store;
+    private KeyValueStore<String, UserSessionHistory> store;
 
-    public ChatMessageProcessor(String storeName) {
+    public WebsocketMessageProcessor(String storeName) {
         this.storeName = storeName;
     }
 
@@ -43,7 +43,7 @@ public class ChatMessageProcessor implements Processor<String, WebsocketMessage,
 
 
 
-    private boolean checkUserIsOnline(UserSessionActivity userSessionActivity) {
+    private boolean checkUserIsOnline(UserSessionHistory userSessionActivity) {
         return userSessionActivity != null &&
                 userSessionActivity.getActiveSessions() != null &&
                 !userSessionActivity.getActiveSessions().isEmpty();

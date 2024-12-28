@@ -12,19 +12,15 @@ import lombok.NoArgsConstructor;
 // this message is used to send messages to the client via websocket
 public class WebsocketMessage {
 
-    public enum WebsocketMessageType {
-        NEW_MESSAGE,
-        NEW_MESSAGE_REACTION,
-        NEW_CONVERSATION,
-        CONVERSATION_NAME_UPDATED,
-        CONVERSATION_MEMBER_ADDED,
-        CONVERSATION_MEMBER_REMOVED,
-        CONVERSATION_MEMBER_LEFT,
-        NEW_NOTIFICATION,
+    public enum EventType {
+        MESSAGE_EVENT,
+        NOTIFICATION_EVENT,
+        CONVERSATION_EVENT,
     }
 
     private String userId;
     private String wsMessageId;
-    private WebsocketMessageType type;
-    private Object data;
+    private EventType eventType;
+    private Object payload;
+    private Long timestamp;
 }
